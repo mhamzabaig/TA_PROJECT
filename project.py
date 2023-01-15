@@ -9,7 +9,6 @@
 # -> Step_4 : If there are 3 consecutive states than remove middle one and directly combine first and third state by concatenation
 
 
-
 ## This Function takes input FA from user 
 def get_transition_table():
     #Empty dictionary to store transition table
@@ -42,12 +41,25 @@ def flip_dict(To_be_flipped):
             flipped[value] = flipped[value] + '+' + key
     return flipped 
 
-def STEP_THREE(TT):    
+def STEP_THREE(TT):              # TT Stands for Transitions Table
     for i in TT:
         new_dict = flip_dict(TT[i])
         new_dict = flip_dict(new_dict)
         TT[i] = new_dict
     return TT
+
+def DelState(TT,S_to_E):         ## State to be eliminated from the dictionary
+    rem_tt = {}                  ## Remaining Transition Table
+    S_to_E.clear()               ## Deleting The state values
+    
+    for key,value in TT.items():
+        if value == {}:
+            continue             ## Just Do Nothing and do not save its Key
+        else:
+            rem_tt[key] = value
+    return rem_tt
+
+
 
 transition_table = STEP_THREE(transition_table)
 print(transition_table)
