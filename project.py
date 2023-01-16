@@ -40,19 +40,6 @@ def FlipDict(To_be_flipped):
             flipped[value] = '(' + flipped[value] + '+' + key + ')'
     return flipped 
 
-def StepThree(TT):              # TT Stands for Transitions Table
-    for i in TT:
-        new_dict = FlipDict(TT[i])
-        new_dict = FlipDict(new_dict)
-        TT[i] = new_dict
-    return TT
-
-def StepFour(TT,S_to_E):
-    TT = ConCatNodes(InComingStates(TT,S_to_E),TT,S_to_E)
-    TT = DelState(TT,TT[S_to_E])    
-    return TT
-
-
 def DelState(TT,S_to_E):         ## State to be eliminated from the dictionary
     rem_tt = {}                  ## Remaining Transition Table
     S_to_E.clear()               ## Deleting The state values
@@ -91,19 +78,37 @@ def ConCatNodes(CmingStates,TT,S_to_E):  ## In This function we are concatenatin
                         
                         for GST in TT[S_to_E]:          ## GST(Going State Transition means that transition element by which we are going to some next state)
                             updated_key['(' + val + CheckSelfLoop(TT,S_to_E) + GST + ')'] = TT[S_to_E][GST]
-                        updated_dict[key] = updated_key
+                        
+                    else:
+                        updated_key[val] = TT[key][val]
+                    updated_dict[key] = updated_key
             else:
                 updated_dict[key] = TT[key]
+                print(updated_dict[key])
         TT = updated_dict
     return TT
+
+def StepThree(TT):              # TT Stands for Transitions Table
+    for i in TT:
+        new_dict = FlipDict(TT[i])
+        new_dict = FlipDict(new_dict)
+        TT[i] = new_dict
+    return TT
+
+def StepFour(TT,S_to_E):
+    TT = ConCatNodes(InComingStates(TT,S_to_E),TT,S_to_E)
+    TT = DelState(TT,TT[S_to_E])    
+    return TT
+
+
 
 # Main Environment
  
 
-dict = {'x1':{'a':'x2','b':'x2'},'x2':{'b':'x3','a':'x2'},'x3':{'c':'x4'},'x4':{'a':'x5'},'x5':{'e':'x5'}}
+dict = {'x1':{'a':'x2','b':'x2','c':'x3'},'x2':{'a':'x3','b':'x3'},'x3':{'a':'x3'}}
 
 ini = 'x1'
-final = 'x5'
+final = 'x3'
 
 
 for i in dict.keys():
@@ -111,5 +116,4 @@ for i in dict.keys():
         dict = StepThree(dict)
         dict = StepFour(dict,i)    
         
-    
 print(dict)
