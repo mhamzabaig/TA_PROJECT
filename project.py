@@ -4,7 +4,7 @@
 ################################# Conversion of FA to RE Contains 4 Steps ####################################
 
 # -> STEP_1 : If there are more than 1 initial states than convert them into 1 initial states
-# -> STEP_2 : If there are more than 1 final states than conver them into 1 final state
+# -> STEP_2 : If there are more than 1 final_state states than conver them into 1 final_state state
 # -> STEP_3 : If we move from one state to another with more than 1 transition elements than combine them with + operator
 # -> Step_4 : If there are 3 consecutive states than remove middle one and directly combine first and third state by concatenation
 
@@ -14,7 +14,7 @@ def GetTransitionTable():
     #Empty dictionary to store transition table
     transition_table = {}
     while True:
-        print("Enter the state name or 'stop' to exit:")
+        print("Enter the state name(for Initial use i and f for final ) or 'stop' to exit:")
         state = input()
         if state == "stop":
             break
@@ -66,25 +66,34 @@ def CheckSelfLoop(TT,S_to_E):
             return '(' + j + ')*'            
     return ''
 
-def ConCatNodes(CmingStates,TT,S_to_E):  ## In This function we are concatenating nodes(1->2->3) will become (1->3)
+def ConCatNodes(CmingStates,TT,S_to_E):             ## In This function we are concatenating nodes(1->2->3) will become (1->3)
     for i in CmingStates:
-        updated_dict = {}
+        updated_dict = {}                           ## Empty Dictionary for States
         
-        for key in TT :
-            if key == i:
-                for val in TT[key]:
-                    if TT[key][val] == S_to_E :
-                        updated_key = {}
-                        
+        for KEY in TT :
+            if KEY == i and i != S_to_E:            ## there is no benefit in checking S_to_E as it will be removed
+                updated_dict[KEY] = {}              ## Empty nested dictionary for transition elements
+                for Val in TT[KEY]:
+
+                    if TT[KEY][Val] == S_to_E :     
                         for GST in TT[S_to_E]:          ## GST(Going State Transition means that transition element by which we are going to some next state)
-                            updated_key['(' + val + CheckSelfLoop(TT,S_to_E) + GST + ')'] = TT[S_to_E][GST]
+                            
+                            if TT[S_to_E][GST] == S_to_E and S_to_E != final_state :
+                                continue                ## As its not a final state and we r coming back to S_to_E which simpl tells us that there is a loop of itself so no need to add it into updated dictionary 
+                            else:
+
+                                if CheckSelfLoop(TT,S_to_E) == '(' + GST + ')*':    ## IF self loop and GST are same so we have to stop them from repeatition
+                                    updated_dict[KEY]['(' + Val + CheckSelfLoop(TT,S_to_E)  + ')'] = TT[S_to_E][GST]
+                                else:
+                                    updated_dict[KEY]['(' + Val + CheckSelfLoop(TT,S_to_E) + GST + ')'] = TT[S_to_E][GST]
                         
                     else:
-                        updated_key[val] = TT[key][val]
-                    updated_dict[key] = updated_key
+                        # updated_key[Val] = 
+                        updated_dict[KEY][Val] = TT[KEY][Val]   ## if upcomming state is different than S_to_E it will remain same as in TT
+                    
             else:
-                updated_dict[key] = TT[key]
-                print(updated_dict[key])
+                updated_dict[KEY] = TT[KEY]
+        
         TT = updated_dict
     return TT
 
@@ -105,15 +114,16 @@ def StepFour(TT,S_to_E):
 # Main Environment
  
 
-dict = {'x1':{'a':'x2','b':'x2','c':'x3'},'x2':{'a':'x3','b':'x3'},'x3':{'a':'x3'}}
+# dict = {'x1':{'a':'x1','b':'x2'},'x2':{'a':'x2','b':'x1'}}
 
-ini = 'x1'
-final = 'x3'
+dict = GetTransitionTable()
+ini_state = 'i'
+final_state = 'f'
 
 
 for i in dict.keys():
-    if(i != ini and i != final):
+    if(i != ini_state ):
         dict = StepThree(dict)
-        dict = StepFour(dict,i)    
-        
+        dict = StepFour(dict,i)  
+
 print(dict)
