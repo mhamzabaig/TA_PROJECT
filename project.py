@@ -37,7 +37,7 @@ def FlipDict(To_be_flipped):
         if value not in flipped:
             flipped[value] = key
         else:
-            flipped[value] = flipped[value] + '+' + key
+            flipped[value] = '(' + flipped[value] + '+' + key + ')'
     return flipped 
 
 def StepThree(TT):              # TT Stands for Transitions Table
@@ -48,7 +48,7 @@ def StepThree(TT):              # TT Stands for Transitions Table
     return TT
 
 def StepFour(TT,S_to_E):
-    
+    TT = ConCatNodes(InComingStates(TT,S_to_E),TT,S_to_E)
     TT = DelState(TT,TT[S_to_E])    
     return TT
 
@@ -73,42 +73,43 @@ def InComingStates(TT,S_to_E):          ## This function will track those nodes 
                 NodesArr.append(i)
     return NodesArr
 
-def ConCatNodes(CmingNodes,TT,S_to_E):  ## In This function we are concatenating nodes(1->2->3) will become (1->3)
-    updated_dict = {}
-    temp = []
-    # for i in CmingNodes:
-    #     for key, values in TT.items():
-    #         for j in values:
-    #             if values[j] == S_to_E and key not in temp:
-    #                 temp.append(key)
-    #                 print(i,key,values,j,values[j])
-    
-    for i in CmingNodes:
+def CheckSelfLoop(TT,S_to_E):
+    for j in TT[S_to_E]:
+        if TT[S_to_E][j] == S_to_E:
+            return '(' + j + ')*'            
+    return ''
+
+def ConCatNodes(CmingStates,TT,S_to_E):  ## In This function we are concatenating nodes(1->2->3) will become (1->3)
+    for i in CmingStates:
+        updated_dict = {}
+        
         for key in TT :
             if key == i:
                 for val in TT[key]:
                     if TT[key][val] == S_to_E :
-                    
-                        print(i,key,TT[key],val,TT[key][val])
+                        updated_key = {}
+                        
+                        for GST in TT[S_to_E]:          ## GST(Going State Transition means that transition element by which we are going to some next state)
+                            updated_key['(' + val + CheckSelfLoop(TT,S_to_E) + GST + ')'] = TT[S_to_E][GST]
+                        updated_dict[key] = updated_key
             else:
                 updated_dict[key] = TT[key]
+        TT = updated_dict
     return TT
 
 # Main Environment
  
 
-dict = {'x1':{'a':'x2'},'x2':{'b':'x3'},'x3':{'c':'x4'},'x4':{'a':'x4'}}
-
+dict = {'x1':{'a':'x2','b':'x2'},'x2':{'b':'x3','a':'x2'},'x3':{'c':'x4'},'x4':{'a':'x5'},'x5':{'e':'x5'}}
 
 ini = 'x1'
-final = 'x4'
-
-ConCatNodes(['x1','x2'],dict,'x2')
+final = 'x5'
 
 
 for i in dict.keys():
     if(i != ini and i != final):
+        dict = StepThree(dict)
         dict = StepFour(dict,i)    
-            #STEP_FOUR(dict)
-            #STEP_THREE(dict)
+        
     
+print(dict)
