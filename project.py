@@ -10,7 +10,7 @@
 
 
 ## This Function takes input FA from user 
-def get_transition_table():
+def GetTransitionTable():
     #Empty dictionary to store transition table
     transition_table = {}
     while True:
@@ -27,12 +27,12 @@ def get_transition_table():
             transition_table[state][alphabet] = next_state
     return transition_table
 
-transition_table = get_transition_table()
+transition_table = GetTransitionTable()
 print(transition_table)
 
 # This function will convert dictionary keys to values and vice versa and concatenate repeatetive value keys
 
-def flip_dict(To_be_flipped):
+def FlipDict(To_be_flipped):
     flipped = {}                
     for key, value in To_be_flipped.items():
         if value not in flipped:
@@ -41,10 +41,10 @@ def flip_dict(To_be_flipped):
             flipped[value] = flipped[value] + '+' + key
     return flipped 
 
-def STEP_THREE(TT):              # TT Stands for Transitions Table
+def StepThree(TT):              # TT Stands for Transitions Table
     for i in TT:
-        new_dict = flip_dict(TT[i])
-        new_dict = flip_dict(new_dict)
+        new_dict = FlipDict(TT[i])
+        new_dict = FlipDict(new_dict)
         TT[i] = new_dict
     return TT
 
@@ -61,5 +61,5 @@ def DelState(TT,S_to_E):         ## State to be eliminated from the dictionary
 
 
 
-transition_table = STEP_THREE(transition_table)
+transition_table = StepThree(transition_table)
 print(transition_table)
