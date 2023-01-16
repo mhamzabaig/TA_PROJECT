@@ -27,8 +27,7 @@ def GetTransitionTable():
             transition_table[state][alphabet] = next_state
     return transition_table
 
-transition_table = GetTransitionTable()
-print(transition_table)
+
 
 # This function will convert dictionary keys to values and vice versa and concatenate repeatetive value keys
 
@@ -48,6 +47,12 @@ def StepThree(TT):              # TT Stands for Transitions Table
         TT[i] = new_dict
     return TT
 
+def StepFour(TT,S_to_E):
+    
+    TT = DelState(TT,TT[S_to_E])    
+    return TT
+
+
 def DelState(TT,S_to_E):         ## State to be eliminated from the dictionary
     rem_tt = {}                  ## Remaining Transition Table
     S_to_E.clear()               ## Deleting The state values
@@ -59,7 +64,51 @@ def DelState(TT,S_to_E):         ## State to be eliminated from the dictionary
             rem_tt[key] = value
     return rem_tt
 
+def InComingStates(TT,S_to_E):          ## This function will track those nodes which are coming to S_to_E
+    NodesArr = []
+    
+    for i in TT:
+        for j in TT[i]:
+            if TT[i][j] == S_to_E:
+                NodesArr.append(i)
+    return NodesArr
+
+def ConCatNodes(CmingNodes,TT,S_to_E):  ## In This function we are concatenating nodes(1->2->3) will become (1->3)
+    updated_dict = {}
+    temp = []
+    # for i in CmingNodes:
+    #     for key, values in TT.items():
+    #         for j in values:
+    #             if values[j] == S_to_E and key not in temp:
+    #                 temp.append(key)
+    #                 print(i,key,values,j,values[j])
+    
+    for i in CmingNodes:
+        for key in TT :
+            if key == i:
+                for val in TT[key]:
+                    if TT[key][val] == S_to_E :
+                    
+                        print(i,key,TT[key],val,TT[key][val])
+            else:
+                updated_dict[key] = TT[key]
+    return TT
+
+# Main Environment
+ 
+
+dict = {'x1':{'a':'x2'},'x2':{'b':'x3'},'x3':{'c':'x4'},'x4':{'a':'x4'}}
 
 
-transition_table = StepThree(transition_table)
-print(transition_table)
+ini = 'x1'
+final = 'x4'
+
+ConCatNodes(['x1','x2'],dict,'x2')
+
+
+for i in dict.keys():
+    if(i != ini and i != final):
+        dict = StepFour(dict,i)    
+            #STEP_FOUR(dict)
+            #STEP_THREE(dict)
+    
