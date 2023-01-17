@@ -116,6 +116,7 @@ def StepFour(TT,S_to_E):
     return TT
 
 def GetRegEx(TT):
+    TT = StepThree(TT)
     for key in TT[ini_state]:
         if key == '':
             return 'NULL'
@@ -140,6 +141,5 @@ for i in TransitionTable.keys():
         TransitionTable = StepThree(TransitionTable)
         TransitionTable = StepFour(TransitionTable,i)  
 
-TransitionTable = StepThree(TransitionTable)
 print(GetRegEx(TransitionTable))
 
