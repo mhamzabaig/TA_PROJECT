@@ -117,16 +117,19 @@ def StepFour(TT,S_to_E):
 
 def GetRegEx(TT):
     TT = StepThree(TT)
+    regex = ''
+    print(TT)
     for key in TT[ini_state]:
         if key == '':
             return 'NULL'
-        return key
+        regex = regex + key
+    return regex
      
 
 #----------//////////// Main Environment \\\\\\\\\\\\\\\----------------- 
 
-TransitionTable = GetTransitionTable()
-# TransitionTable = {'i':{'a':'x1','b':'x3'},'x1':{'a':'i','b':'x2'},'x3':{'a':'x2','b':'i'},'x2':{'b':'x1','a':'x3'}}
+# TransitionTable = GetTransitionTable()
+TransitionTable = {'i':{'a':'x1','b':'x3'},'x1':{'a':'i','b':'f'},'x3':{'a':'f','b':'i'},'f':{'b':'x1','a':'x3'}}
 
 if(CheckFinalState(TransitionTable)):
     ini_state = 'i'
