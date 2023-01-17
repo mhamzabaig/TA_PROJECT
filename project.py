@@ -1,4 +1,4 @@
-########-------- This Is Conversion of Finite Automata ----->>>>> Regular Expression............##############
+########--------------<<<<<<<<-------- This Is Conversion of Finite Automata ---------->>>>> Regular Expression--------------##############
 
 
 ################################# Conversion of FA to RE Contains 4 Steps ####################################
@@ -7,6 +7,7 @@
 # -> STEP_2 : If there are more than 1 final_state states than conver them into 1 final_state state
 # -> STEP_3 : If we move from one state to another with more than 1 transition elements than combine them with + operator
 # -> Step_4 : If there are 3 consecutive states than remove middle one and directly combine first and third state by concatenation
+
 
 
 ## This Function takes input FA from user 
@@ -27,6 +28,12 @@ def GetTransitionTable():
             transition_table[state][alphabet] = next_state
     return transition_table
 
+## This function will check if there is no final state mentioned it will automatically consider initial state as final ################
+def CheckFinalState(TT):    
+    for key in TT:
+        if key == 'f':
+            return True
+    return False
 
 
 # This function will convert dictionary keys to values and vice versa and concatenate repeatetive value keys
@@ -52,7 +59,7 @@ def DelState(TT,S_to_E):         ## State to be eliminated from the dictionary
     return rem_tt
 
 def InComingStates(TT,S_to_E):          ## This function will track those nodes which are coming to S_to_E
-    NodesArr = []
+    NodesArr = []                       ## All Incoming Nodes will be stored in this array
     
     for i in TT:
         for j in TT[i]:
@@ -88,7 +95,6 @@ def ConCatNodes(CmingStates,TT,S_to_E):             ## In This function we are c
                                     updated_dict[KEY]['(' + Val + CheckSelfLoop(TT,S_to_E) + GST + ')'] = TT[S_to_E][GST]
                         
                     else:
-                        # updated_key[Val] = 
                         updated_dict[KEY][Val] = TT[KEY][Val]   ## if upcomming state is different than S_to_E it will remain same as in TT
                     
             else:
@@ -109,21 +115,31 @@ def StepFour(TT,S_to_E):
     TT = DelState(TT,TT[S_to_E])    
     return TT
 
+def GetRegEx(TT):
+    for key in TT[ini_state]:
+        if key == '':
+            return 'NULL'
+        return key
+     
 
+#----------//////////// Main Environment \\\\\\\\\\\\\\\----------------- 
 
-# Main Environment
- 
+TransitionTable = GetTransitionTable()
+# TransitionTable = {'i':{'a':'x1','b':'x3'},'x1':{'a':'i','b':'x2'},'x3':{'a':'x2','b':'i'},'x2':{'b':'x1','a':'x3'}}
 
-# dict = {'x1':{'a':'x1','b':'x2'},'x2':{'a':'x2','b':'x1'}}
+if(CheckFinalState(TransitionTable)):
+    ini_state = 'i'
+    final_state = 'f'
+else:
+    ini_state = 'i'
+    TransitionTable['i']['null'] = 'i'
+    final_state = ini_state
 
-dict = GetTransitionTable()
-ini_state = 'i'
-final_state = 'f'
-
-
-for i in dict.keys():
+for i in TransitionTable.keys():
     if(i != ini_state ):
-        dict = StepThree(dict)
-        dict = StepFour(dict,i)  
+        TransitionTable = StepThree(TransitionTable)
+        TransitionTable = StepFour(TransitionTable,i)  
 
-print(dict)
+TransitionTable = StepThree(TransitionTable)
+print(GetRegEx(TransitionTable))
+
