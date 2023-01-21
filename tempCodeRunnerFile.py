@@ -36,8 +36,7 @@ def CheckFinalState(TT):
             if TT[key][val] == 'f':
                 flag = True
 
-    #####!!!!!!!||||||||||||--------STEP 2 -----------|||||||||||!!!!!!!!!!!!!#########
-    if not flag:                    # If there are multiple final states we will combine them to One final state with null transition
+    if not flag:
         print("Enter Finals states with spaces between them ")
         finals = input().split() 
         for each in finals:
